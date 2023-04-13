@@ -11,6 +11,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      
       - name: 'Az CLI login'
         uses: azure/login@v1
         with:
@@ -23,3 +24,31 @@ jobs:
             az account show
             az group list
             pwd
+
+      - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+     
+      - name: Install dependencies
+        run: |
+          pwd
+          cd src
+          dotnet restore
+     
+      - name: Build
+        run: |
+          pwd
+          cd src
+          dotnet build --configuration Release --no-restore
+
+      
+      
+      - name: Deploy to Azure
+        run: |
+          pwd
+          ls
+
+          zip package.zip src/Humongous.Healthcare/bin/Release
+
+          az webapp deploy --resource-group humungousworkshop --name HumongousHealthcareApi --src-path package.zip

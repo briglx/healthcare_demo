@@ -44,7 +44,7 @@ jobs:
       - name: Publish
         run: |
           pwd
-          cd src
+          cd src/Humongous.Healthcare
           dotnet publish --configuration Release --output out
 
       - name: Deploy to Azure

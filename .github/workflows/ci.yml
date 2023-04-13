@@ -53,15 +53,22 @@ jobs:
           dotnet build --configuration Release --no-restore
           dotnet publish --no-build -c Release -o "${{ github.workspace }}/out"
 
-      - name: Deploy to Azure
-        run: |
-          pwd
-          ls
 
-          cd "${{ github.workspace }}/out"
-          pwd
-          ls
+      - name: 'Deploy to Azure'
+        uses: azure/webapps-deploy@v2
+        with: 
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          package: '${{ github.workspace }}/out'
 
-          zip package.zip .
+      # - name: Deploy to Azure
+      #   run: |
+      #     pwd
+      #     ls
 
-          az webapp deploy --resource-group humungousworkshop --name humungousworkshop-www --src-path package.zip
+      #     cd "${{ github.workspace }}/out"
+      #     pwd
+      #     ls
+
+      #     zip package.zip .
+
+      #     az webapp deploy --resource-group humungousworkshop --name "${{ env.AZURE_WEBAPP_NAME }}" --src-path package.zip

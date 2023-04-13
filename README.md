@@ -74,8 +74,8 @@ Create An Azure Active Directory application, with a service principal that has 
 # load .env vars (optional)
 [ ! -f .env ] || export $(grep -v '^#' .env | xargs)
 
-app_name=github_cicd_service_app
-app_secret_name=github_cicd_client_secret
+app_name=github_health_demo_cicd_service_app
+app_secret_name=github_health_demo_cicd_client_secret
 
 az login --tenant $AZURE_TENANT_ID
 

@@ -1,0 +1,17 @@
+name: CI
+
+on:
+  push: ~
+
+jobs:
+  build:
+    name: Build App
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+        
+      - name: Make 
+        run: |
+          echo "Success"

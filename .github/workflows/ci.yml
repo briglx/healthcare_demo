@@ -16,7 +16,7 @@ on:
 permissions:
       id-token: write
       contents: read
-      
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -47,19 +47,21 @@ jobs:
           cd src
           dotnet restore
      
-      - name: Build
+      - name: Publish
         run: |
           pwd
           cd src
-          dotnet build --configuration Release --no-restore
+          dotnet publish --configuration Release --no-restore --out out
 
-      
-      
       - name: Deploy to Azure
         run: |
           pwd
           ls
 
-          zip package.zip src/Humongous.Healthcare/bin/Release
+          zip package.zip out
 
-          az webapp deploy --resource-group humungousworkshop --name HumongousHealthcareApi --src-path package.zip
+          # zip package.zip src/Humongous.Healthcare/bin/Release/net6.0/publish
+
+          ls
+
+          az webapp deploy --resource-group humungousworkshop --name humungousworkshop-www --src-path package.zip

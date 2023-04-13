@@ -13,6 +13,11 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+env:
+  AZURE_WEBAPP_NAME: humungousworkshop-www    # set this to your application's name
+  AZURE_WEBAPP_PACKAGE_PATH: '.'      # set this to the path to your web app project, defaults to the repository root
+  DOTNET_VERSION: '6.0' 
+
 permissions:
       id-token: write
       contents: read
@@ -36,26 +41,27 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
+      - name: Setup .NET Core
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: ${{ matrix.dotnet-version }}
+          dotnet-version: ${{ env.DOTNET_VERSION }} 
 
-      - name: Publish
+      - name: dotnet build and publish
         run: |
-          pwd
           cd src/Humongous.Healthcare
-          dotnet publish --configuration Release --output out
+          dotnet restore
+          dotnet build --configuration Release --no-restore
+          dotnet publish --no-build -c Release -o "${{ github.workspace }}/out"
 
       - name: Deploy to Azure
         run: |
           pwd
           ls
 
-          zip package.zip src/Humongous.Healthcare/out
-
-          # zip package.zip src/Humongous.Healthcare/bin/Release/net6.0/publish
-
+          cd "${{ github.workspace }}/out"
+          pwd
           ls
+
+          zip package.zip .
 
           az webapp deploy --resource-group humungousworkshop --name humungousworkshop-www --src-path package.zip

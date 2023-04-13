@@ -1,0 +1,1863 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "profiles_humungousworkshop_name": {
+            "defaultValue": "humungousworkshop",
+            "type": "String"
+        },
+        "sites_humungousworkshop_www_name": {
+            "defaultValue": "humungousworkshop-www",
+            "type": "String"
+        },
+        "vaults_humungousdemo_kv_name": {
+            "defaultValue": "humungousdemo-kv",
+            "type": "String"
+        },
+        "service_humungousdemo_apim_name": {
+            "defaultValue": "humungousdemo-apim",
+            "type": "String"
+        },
+        "components_humungousworkshop_www_name": {
+            "defaultValue": "humungousworkshop-www",
+            "type": "String"
+        },
+        "databaseAccounts_umungousworkshop_name": {
+            "defaultValue": "umungousworkshop",
+            "type": "String"
+        },
+        "webtests_humungousdemo_apim_humungousworkshop_www_name": {
+            "defaultValue": "humungousdemo-apim-humungousworkshop-www",
+            "type": "String"
+        },
+        "smartdetectoralertrules_failure_anomalies___humungousworkshop_www_name": {
+            "defaultValue": "failure anomalies - humungousworkshop-www",
+            "type": "String"
+        },
+        "actiongroups_application_insights_smart_detection_externalid": {
+            "defaultValue": "/subscriptions/604355d5-a876-4c9c-b232-7d306be5abc9/resourceGroups/mosaic-rg-dev12/providers/microsoft.insights/actiongroups/application insights smart detection",
+            "type": "String"
+        },
+        "workspaces_defaultworkspace_604355d5_a876_4c9c_b232_7d306be5abc9_eus_externalid": {
+            "defaultValue": "/subscriptions/604355d5-a876-4c9c-b232-7d306be5abc9/resourceGroups/defaultresourcegroup-eus/providers/microsoft.operationalinsights/workspaces/defaultworkspace-604355d5-a876-4c9c-b232-7d306be5abc9-eus",
+            "type": "String"
+        },
+        "serverfarms_ASP_privateendpointtest_bf72_externalid": {
+            "defaultValue": "/subscriptions/604355d5-a876-4c9c-b232-7d306be5abc9/resourceGroups/privateendpointtest/providers/Microsoft.Web/serverfarms/ASP-privateendpointtest-bf72",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.ApiManagement/service",
+            "apiVersion": "2022-08-01",
+            "name": "[parameters('service_humungousdemo_apim_name')]",
+            "location": "East US 2",
+            "sku": {
+                "name": "Consumption",
+                "capacity": 0
+            },
+            "properties": {
+                "publisherEmail": "benwilli@microsoft.com",
+                "publisherName": "ben",
+                "notificationSenderEmail": "apimgmt-noreply@mail.windowsazure.com",
+                "hostnameConfigurations": [
+                    {
+                        "type": "Proxy",
+                        "hostName": "[concat(parameters('service_humungousdemo_apim_name'), '.azure-api.net')]",
+                        "negotiateClientCertificate": false,
+                        "defaultSslBinding": true,
+                        "certificateSource": "BuiltIn"
+                    }
+                ],
+                "customProperties": {
+                    "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls11": "false",
+                    "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls10": "false",
+                    "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls11": "false",
+                    "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls10": "false",
+                    "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Ssl30": "false",
+                    "Microsoft.WindowsAzure.ApiManagement.Gateway.Protocols.Server.Http2": "true"
+                },
+                "virtualNetworkType": "None",
+                "disableGateway": false,
+                "natGatewayState": "Disabled",
+                "apiVersionConstraint": {},
+                "publicNetworkAccess": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Cdn/profiles",
+            "apiVersion": "2022-11-01-preview",
+            "name": "[parameters('profiles_humungousworkshop_name')]",
+            "location": "Global",
+            "sku": {
+                "name": "Premium_AzureFrontDoor"
+            },
+            "kind": "frontdoor",
+            "properties": {
+                "originResponseTimeoutSeconds": 60,
+                "extendedProperties": {}
+            }
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts",
+            "apiVersion": "2023-03-01-preview",
+            "name": "[parameters('databaseAccounts_umungousworkshop_name')]",
+            "location": "East US",
+            "tags": {
+                "defaultExperience": "Core (SQL)",
+                "hidden-cosmos-mmspecial": ""
+            },
+            "kind": "GlobalDocumentDB",
+            "identity": {
+                "type": "None"
+            },
+            "properties": {
+                "publicNetworkAccess": "Enabled",
+                "enableAutomaticFailover": false,
+                "enableMultipleWriteLocations": false,
+                "isVirtualNetworkFilterEnabled": false,
+                "virtualNetworkRules": [],
+                "disableKeyBasedMetadataWriteAccess": false,
+                "enableFreeTier": false,
+                "enableAnalyticalStorage": false,
+                "analyticalStorageConfiguration": {
+                    "schemaType": "WellDefined"
+                },
+                "databaseAccountOfferType": "Standard",
+                "enableMaterializedViews": false,
+                "defaultIdentity": "FirstPartyIdentity",
+                "networkAclBypass": "None",
+                "disableLocalAuth": false,
+                "enablePartitionMerge": false,
+                "enableBurstCapacity": false,
+                "minimalTlsVersion": "Tls12",
+                "consistencyPolicy": {
+                    "defaultConsistencyLevel": "Session",
+                    "maxIntervalInSeconds": 5,
+                    "maxStalenessPrefix": 100
+                },
+                "locations": [
+                    {
+                        "locationName": "East US",
+                        "provisioningState": "Succeeded",
+                        "failoverPriority": 0,
+                        "isZoneRedundant": false
+                    }
+                ],
+                "cors": [],
+                "capabilities": [],
+                "ipRules": [],
+                "backupPolicy": {
+                    "type": "Periodic",
+                    "periodicModeProperties": {
+                        "backupIntervalInMinutes": 240,
+                        "backupRetentionIntervalInHours": 8,
+                        "backupStorageRedundancy": "Geo"
+                    }
+                },
+                "networkAclBypassResourceIds": [],
+                "diagnosticLogSettings": {
+                    "enableFullTextQuery": "None"
+                },
+                "keysMetadata": {}
+            }
+        },
+        {
+            "type": "microsoft.insights/components",
+            "apiVersion": "2020-02-02",
+            "name": "[parameters('components_humungousworkshop_www_name')]",
+            "location": "eastus",
+            "kind": "web",
+            "properties": {
+                "Application_Type": "web",
+                "Flow_Type": "Redfield",
+                "Request_Source": "IbizaWebAppExtensionCreate",
+                "RetentionInDays": 90,
+                "WorkspaceResourceId": "[parameters('workspaces_defaultworkspace_604355d5_a876_4c9c_b232_7d306be5abc9_eus_externalid')]",
+                "IngestionMode": "LogAnalytics",
+                "publicNetworkAccessForIngestion": "Enabled",
+                "publicNetworkAccessForQuery": "Enabled"
+            }
+        },
+        {
+            "type": "microsoft.insights/webtests",
+            "apiVersion": "2022-06-15",
+            "name": "[parameters('webtests_humungousdemo_apim_humungousworkshop_www_name')]",
+            "location": "eastus",
+            "tags": {
+                "hidden-link:/subscriptions/604355d5-a876-4c9c-b232-7d306be5abc9/resourceGroups/humungousworkshop/providers/microsoft.insights/components/humungousworkshop-www": "Resource"
+            },
+            "properties": {
+                "SyntheticMonitorId": "[parameters('webtests_humungousdemo_apim_humungousworkshop_www_name')]",
+                "Name": "humungousdemo-apim",
+                "Enabled": true,
+                "Frequency": 300,
+                "Timeout": 30,
+                "Kind": "ping",
+                "RetryEnabled": true,
+                "Locations": [
+                    {
+                        "Id": "emea-nl-ams-azr"
+                    },
+                    {
+                        "Id": "us-ca-sjc-azr"
+                    },
+                    {
+                        "Id": "emea-ru-msa-edge"
+                    },
+                    {
+                        "Id": "emea-se-sto-edge"
+                    },
+                    {
+                        "Id": "apac-sg-sin-azr"
+                    },
+                    {
+                        "Id": "us-tx-sn1-azr"
+                    },
+                    {
+                        "Id": "us-il-ch1-azr"
+                    },
+                    {
+                        "Id": "emea-gb-db3-azr"
+                    },
+                    {
+                        "Id": "apac-jp-kaw-edge"
+                    },
+                    {
+                        "Id": "emea-ch-zrh-edge"
+                    },
+                    {
+                        "Id": "emea-fr-pra-edge"
+                    },
+                    {
+                        "Id": "us-va-ash-azr"
+                    },
+                    {
+                        "Id": "apac-hk-hkn-azr"
+                    },
+                    {
+                        "Id": "us-fl-mia-edge"
+                    },
+                    {
+                        "Id": "latam-br-gru-edge"
+                    },
+                    {
+                        "Id": "emea-au-syd-edge"
+                    }
+                ],
+                "Configuration": {
+                    "WebTest": "<WebTest Name=\"humungousdemo-apim\" Id=\"c2897656-334e-4f20-8874-6f611932fdd0\" Enabled=\"true\" CssProjectStructure=\"\" CssIteration=\"\" Timeout=\"30\" WorkItemIds=\"\" xmlns=\"http://microsoft.com/schemas/VisualStudio/TeamTest/2010\" Description=\"\" CredentialUserName=\"\" CredentialPassword=\"\" PreAuthenticate=\"True\" Proxy=\"default\" StopOnError=\"False\" RecordedResultFile=\"\" ResultsLocale=\"\">\n    <Items>\n        <Request Method=\"GET\" Guid=\"4293281b-5bd1-489b-8c9e-e0fbdb48747d\" Version=\"1.1\" Url=\"https://humungousdemo-apim.azure-api.net/status-0123456789abcdef\" ThinkTime=\"0\" Timeout=\"30\" ParseDependentRequests=\"False\" FollowRedirects=\"True\" RecordResult=\"True\" Cache=\"False\" ResponseTimeGoal=\"0\" Encoding=\"utf-8\" ExpectedHttpStatusCode=\"200\" ExpectedResponseUrl=\"\" ReportingName=\"\" IgnoreHttpStatusCode=\"False\" />\n    </Items>\n</WebTest>"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.KeyVault/vaults",
+            "apiVersion": "2023-02-01",
+            "name": "[parameters('vaults_humungousdemo_kv_name')]",
+            "location": "eastus",
+            "properties": {
+                "sku": {
+                    "family": "A",
+                    "name": "Standard"
+                },
+                "tenantId": "16b3c013-d300-468d-ac64-7eda0820b6d3",
+                "accessPolicies": [
+                    {
+                        "tenantId": "16b3c013-d300-468d-ac64-7eda0820b6d3",
+                        "objectId": "43f84dee-ab4a-4587-9660-da11c654e2dc",
+                        "permissions": {
+                            "keys": [
+                                "Get",
+                                "List",
+                                "Update",
+                                "Create",
+                                "Import",
+                                "Delete",
+                                "Recover",
+                                "Backup",
+                                "Restore",
+                                "GetRotationPolicy",
+                                "SetRotationPolicy",
+                                "Rotate"
+                            ],
+                            "secrets": [
+                                "Get",
+                                "List",
+                                "Set",
+                                "Delete",
+                                "Recover",
+                                "Backup",
+                                "Restore"
+                            ],
+                            "certificates": [
+                                "Get",
+                                "List",
+                                "Update",
+                                "Create",
+                                "Import",
+                                "Delete",
+                                "Recover",
+                                "Backup",
+                                "Restore",
+                                "ManageContacts",
+                                "ManageIssuers",
+                                "GetIssuers",
+                                "ListIssuers",
+                                "SetIssuers",
+                                "DeleteIssuers"
+                            ]
+                        }
+                    },
+                    {
+                        "tenantId": "16b3c013-d300-468d-ac64-7eda0820b6d3",
+                        "objectId": "3466f34c-28c1-4371-9e9c-9e68c38d9715",
+                        "permissions": {
+                            "keys": [],
+                            "secrets": [
+                                "Get",
+                                "List"
+                            ],
+                            "certificates": []
+                        }
+                    },
+                    {
+                        "tenantId": "16b3c013-d300-468d-ac64-7eda0820b6d3",
+                        "objectId": "76bbd217-cc90-4f41-84b3-8418c6c048f9",
+                        "permissions": {
+                            "certificates": [
+                                "Get",
+                                "List",
+                                "Update",
+                                "Create",
+                                "Import",
+                                "Delete",
+                                "Recover",
+                                "Backup",
+                                "Restore",
+                                "ManageContacts",
+                                "ManageIssuers",
+                                "GetIssuers",
+                                "ListIssuers",
+                                "SetIssuers",
+                                "DeleteIssuers"
+                            ],
+                            "keys": [
+                                "Get",
+                                "List",
+                                "Update",
+                                "Create",
+                                "Import",
+                                "Delete",
+                                "Recover",
+                                "Backup",
+                                "Restore",
+                                "GetRotationPolicy",
+                                "SetRotationPolicy",
+                                "Rotate"
+                            ],
+                            "secrets": [
+                                "Get",
+                                "List",
+                                "Set",
+                                "Delete",
+                                "Recover",
+                                "Backup",
+                                "Restore"
+                            ]
+                        }
+                    }
+                ],
+                "enabledForDeployment": false,
+                "enabledForDiskEncryption": false,
+                "enabledForTemplateDeployment": false,
+                "enableSoftDelete": true,
+                "softDeleteRetentionInDays": 90,
+                "enableRbacAuthorization": false,
+                "vaultUri": "[concat('https://', parameters('vaults_humungousdemo_kv_name'), '.vault.azure.net/')]",
+                "provisioningState": "Succeeded",
+                "publicNetworkAccess": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2022-09-01",
+            "name": "[parameters('sites_humungousworkshop_www_name')]",
+            "location": "East US",
+            "kind": "app",
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "properties": {
+                "enabled": true,
+                "hostNameSslStates": [
+                    {
+                        "name": "[concat(parameters('sites_humungousworkshop_www_name'), '.azurewebsites.net')]",
+                        "sslState": "Disabled",
+                        "hostType": "Standard"
+                    },
+                    {
+                        "name": "[concat(parameters('sites_humungousworkshop_www_name'), '.scm.azurewebsites.net')]",
+                        "sslState": "Disabled",
+                        "hostType": "Repository"
+                    }
+                ],
+                "serverFarmId": "[parameters('serverfarms_ASP_privateendpointtest_bf72_externalid')]",
+                "reserved": false,
+                "isXenon": false,
+                "hyperV": false,
+                "vnetRouteAllEnabled": false,
+                "vnetImagePullEnabled": false,
+                "vnetContentShareEnabled": false,
+                "siteConfig": {
+                    "numberOfWorkers": 1,
+                    "acrUseManagedIdentityCreds": false,
+                    "alwaysOn": true,
+                    "http20Enabled": false,
+                    "functionAppScaleLimit": 0,
+                    "minimumElasticInstanceCount": 0
+                },
+                "scmSiteAlsoStopped": false,
+                "clientAffinityEnabled": true,
+                "clientCertEnabled": false,
+                "clientCertMode": "Required",
+                "hostNamesDisabled": false,
+                "customDomainVerificationId": "1FC8B4D1339892DC61B800F36E36D51C03D5525FC79481F0E356A5521181A2DB",
+                "containerSize": 0,
+                "dailyMemoryTimeQuota": 0,
+                "httpsOnly": true,
+                "redundancyMode": "None",
+                "publicNetworkAccess": "Enabled",
+                "storageAccountRequired": false,
+                "keyVaultReferenceIdentity": "SystemAssigned"
+            }
+        },
+        {
+            "type": "microsoft.alertsmanagement/smartdetectoralertrules",
+            "apiVersion": "2021-04-01",
+            "name": "[parameters('smartdetectoralertrules_failure_anomalies___humungousworkshop_www_name')]",
+            "location": "global",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_humungousworkshop_www_name'))]"
+            ],
+            "properties": {
+                "description": "Failure Anomalies notifies you of an unusual rise in the rate of failed HTTP requests or dependency calls.",
+                "state": "Enabled",
+                "severity": "Sev3",
+                "frequency": "PT1M",
+                "detector": {
+                    "id": "FailureAnomaliesDetector"
+                },
+                "scope": [
+                    "[resourceId('microsoft.insights/components', parameters('components_humungousworkshop_www_name'))]"
+                ],
+                "actionGroups": {
+                    "groupIds": [
+                        "[parameters('actiongroups_application_insights_smart_detection_externalid')]"
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis",
+            "apiVersion": "2022-08-01",
+            "name": "[concat(parameters('service_humungousdemo_apim_name'), '/humongous-healthcare')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_humungousdemo_apim_name'))]"
+            ],
+            "properties": {
+                "displayName": "Humongous.Healthcare",
+                "apiRevision": "1",
+                "subscriptionRequired": false,
+                "serviceUrl": "https://humungousworkshop-www.azurewebsites.net/",
+                "path": "humungous",
+                "protocols": [
+                    "https"
+                ],
+                "authenticationSettings": {
+                    "oAuth2AuthenticationSettings": [],
+                    "openidAuthenticationSettings": []
+                },
+                "subscriptionKeyParameterNames": {
+                    "header": "Ocp-Apim-Subscription-Key",
+                    "query": "subscription-key"
+                },
+                "isCurrent": true
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/namedValues",
+            "apiVersion": "2022-08-01",
+            "name": "[concat(parameters('service_humungousdemo_apim_name'), '/64384cda313e2f106c0e63ff')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_humungousdemo_apim_name'))]"
+            ],
+            "properties": {
+                "displayName": "Logger-Credentials--64384cda313e2f106c0e6400",
+                "secret": true
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/policies",
+            "apiVersion": "2022-08-01",
+            "name": "[concat(parameters('service_humungousdemo_apim_name'), '/policy')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_humungousdemo_apim_name'))]"
+            ],
+            "properties": {
+                "value": "<!--\r\n    IMPORTANT:\r\n    - Policy elements can appear only within the <inbound>, <outbound>, <backend> section elements.\r\n    - Only the <forward-request> policy element can appear within the <backend> section element.\r\n    - To apply a policy to the incoming request (before it is forwarded to the backend service), place a corresponding policy element within the <inbound> section element.\r\n    - To apply a policy to the outgoing response (before it is sent back to the caller), place a corresponding policy element within the <outbound> section element.\r\n    - To add a policy position the cursor at the desired insertion point and click on the round button associated with the policy.\r\n    - To remove a policy, delete the corresponding policy statement from the policy document.\r\n    - Policies are applied in the order of their appearance, from the top down.\r\n-->\r\n<policies>\r\n  <inbound></inbound>\r\n  <backend>\r\n    <forward-request />\r\n  </backend>\r\n  <outbound></outbound>\r\n</policies>",
+                "format": "xml"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/products",
+            "apiVersion": "2022-08-01",
+            "name": "[concat(parameters('service_humungousdemo_apim_name'), '/humungousdemo-product')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_humungousdemo_apim_name'))]"
+            ],
+            "properties": {
+                "displayName": "humungousdemo-product",
+                "description": "humungousdemo ",
+                "subscriptionRequired": true,
+                "approvalRequired": false,
+                "state": "published"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/properties",
+            "apiVersion": "2019-01-01",
+            "name": "[concat(parameters('service_humungousdemo_apim_name'), '/64384cda313e2f106c0e63ff')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_humungousdemo_apim_name'))]"
+            ],
+            "properties": {
+                "displayName": "Logger-Credentials--64384cda313e2f106c0e6400",
+                "value": "85d6a734-7735-4429-ae9c-a7852643f04b",
+                "secret": true
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/subscriptions",
+            "apiVersion": "2022-08-01",
+            "name": "[concat(parameters('service_humungousdemo_apim_name'), '/master')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_humungousdemo_apim_name'))]"
+            ],
+            "properties": {
+                "scope": "[concat(resourceId('Microsoft.ApiManagement/service', parameters('service_humungousdemo_apim_name')), '/')]",
+                "displayName": "Built-in all-access subscription",
+                "state": "active",
+                "allowTracing": false
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/tags",
+            "apiVersion": "2022-08-01",
+            "name": "[concat(parameters('service_humungousdemo_apim_name'), '/HealthCheck')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_humungousdemo_apim_name'))]"
+            ],
+            "properties": {
+                "displayName": "HealthCheck"
+            }
+        },
+        {
+            "type": "Microsoft.Cdn/profiles/afdendpoints",
+            "apiVersion": "2022-11-01-preview",
+            "name": "[concat(parameters('profiles_humungousworkshop_name'), '/powerappworshop')]",
+            "location": "Global",
+            "dependsOn": [
+                "[resourceId('Microsoft.Cdn/profiles', parameters('profiles_humungousworkshop_name'))]"
+            ],
+            "properties": {
+                "enabledState": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Cdn/profiles/origingroups",
+            "apiVersion": "2022-11-01-preview",
+            "name": "[concat(parameters('profiles_humungousworkshop_name'), '/default-origin-group')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Cdn/profiles', parameters('profiles_humungousworkshop_name'))]"
+            ],
+            "properties": {
+                "loadBalancingSettings": {
+                    "sampleSize": 4,
+                    "successfulSamplesRequired": 3,
+                    "additionalLatencyInMilliseconds": 50
+                },
+                "healthProbeSettings": {
+                    "probePath": "/",
+                    "probeRequestType": "HEAD",
+                    "probeProtocol": "Http",
+                    "probeIntervalInSeconds": 100
+                },
+                "sessionAffinityState": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
+            "apiVersion": "2023-03-01-preview",
+            "name": "[concat(parameters('databaseAccounts_umungousworkshop_name'), '/HealthCheckDB')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_umungousworkshop_name'))]"
+            ],
+            "properties": {
+                "resource": {
+                    "id": "HealthCheckDB"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions",
+            "apiVersion": "2023-03-01-preview",
+            "name": "[concat(parameters('databaseAccounts_umungousworkshop_name'), '/00000000-0000-0000-0000-000000000001')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_umungousworkshop_name'))]"
+            ],
+            "properties": {
+                "roleName": "Cosmos DB Built-in Data Reader",
+                "type": "BuiltInRole",
+                "assignableScopes": [
+                    "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_umungousworkshop_name'))]"
+                ],
+                "permissions": [
+                    {
+                        "dataActions": [
+                            "Microsoft.DocumentDB/databaseAccounts/readMetadata",
+                            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/executeQuery",
+                            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/readChangeFeed",
+                            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/read"
+                        ],
+                        "notDataActions": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions",
+            "apiVersion": "2023-03-01-preview",
+            "name": "[concat(parameters('databaseAccounts_umungousworkshop_name'), '/00000000-0000-0000-0000-000000000002')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_umungousworkshop_name'))]"
+            ],
+            "properties": {
+                "roleName": "Cosmos DB Built-in Data Contributor",
+                "type": "BuiltInRole",
+                "assignableScopes": [
+                    "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_umungousworkshop_name'))]"
+                ],
+                "permissions": [
+                    {
+                        "dataActions": [
+                            "Microsoft.DocumentDB/databaseAccounts/readMetadata",
+                            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*",
+                            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*"
+                        ],
+                        "notDataActions": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_humungousworkshop_www_name'), '/degradationindependencyduration')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_humungousworkshop_www_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "degradationindependencyduration",
+                    "DisplayName": "Degradation in dependency duration",
+                    "Description": "Smart Detection rules notify you of performance anomaly issues.",
+                    "HelpUrl": "https://docs.microsoft.com/en-us/azure/application-insights/app-insights-proactive-performance-diagnostics",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": false,
+                    "SupportsEmailNotifications": true
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_humungousworkshop_www_name'), '/degradationinserverresponsetime')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_humungousworkshop_www_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "degradationinserverresponsetime",
+                    "DisplayName": "Degradation in server response time",
+                    "Description": "Smart Detection rules notify you of performance anomaly issues.",
+                    "HelpUrl": "https://docs.microsoft.com/en-us/azure/application-insights/app-insights-proactive-performance-diagnostics",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": false,
+                    "SupportsEmailNotifications": true
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_humungousworkshop_www_name'), '/digestMailConfiguration')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_humungousworkshop_www_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "digestMailConfiguration",
+                    "DisplayName": "Digest Mail Configuration",
+                    "Description": "This rule describes the digest mail preferences",
+                    "HelpUrl": "www.homail.com",
+                    "IsHidden": true,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": false,
+                    "SupportsEmailNotifications": true
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_humungousworkshop_www_name'), '/extension_billingdatavolumedailyspikeextension')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_humungousworkshop_www_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "extension_billingdatavolumedailyspikeextension",
+                    "DisplayName": "Abnormal rise in daily data volume (preview)",
+                    "Description": "This detection rule automatically analyzes the billing data generated by your application, and can warn you about an unusual increase in your application's billing costs",
+                    "HelpUrl": "https://github.com/Microsoft/ApplicationInsights-Home/tree/master/SmartDetection/billing-data-volume-daily-spike.md",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": true,
+                    "SupportsEmailNotifications": false
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_humungousworkshop_www_name'), '/extension_canaryextension')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_humungousworkshop_www_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "extension_canaryextension",
+                    "DisplayName": "Canary extension",
+                    "Description": "Canary extension",
+                    "HelpUrl": "https://github.com/Microsoft/ApplicationInsights-Home/blob/master/SmartDetection/",
+                    "IsHidden": true,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": true,
+                    "SupportsEmailNotifications": false
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_humungousworkshop_www_name'), '/extension_exceptionchangeextension')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_humungousworkshop_www_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "extension_exceptionchangeextension",
+                    "DisplayName": "Abnormal rise in exception volume (preview)",
+                    "Description": "This detection rule automatically analyzes the exceptions thrown in your application, and can warn you about unusual patterns in your exception telemetry.",
+                    "HelpUrl": "https://github.com/Microsoft/ApplicationInsights-Home/blob/master/SmartDetection/abnormal-rise-in-exception-volume.md",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": true,
+                    "SupportsEmailNotifications": false
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_humungousworkshop_www_name'), '/extension_memoryleakextension')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_humungousworkshop_www_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "extension_memoryleakextension",
+                    "DisplayName": "Potential memory leak detected (preview)",
+                    "Description": "This detection rule automatically analyzes the memory consumption of each process in your application, and can warn you about potential memory leaks or increased memory consumption.",
+                    "HelpUrl": "https://github.com/Microsoft/ApplicationInsights-Home/tree/master/SmartDetection/memory-leak.md",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": true,
+                    "SupportsEmailNotifications": false
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_humungousworkshop_www_name'), '/extension_securityextensionspackage')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_humungousworkshop_www_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "extension_securityextensionspackage",
+                    "DisplayName": "Potential security issue detected (preview)",
+                    "Description": "This detection rule automatically analyzes the telemetry generated by your application and detects potential security issues.",
+                    "HelpUrl": "https://github.com/Microsoft/ApplicationInsights-Home/blob/master/SmartDetection/application-security-detection-pack.md",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": true,
+                    "SupportsEmailNotifications": false
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_humungousworkshop_www_name'), '/extension_traceseveritydetector')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_humungousworkshop_www_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "extension_traceseveritydetector",
+                    "DisplayName": "Degradation in trace severity ratio (preview)",
+                    "Description": "This detection rule automatically analyzes the trace logs emitted from your application, and can warn you about unusual patterns in the severity of your trace telemetry.",
+                    "HelpUrl": "https://github.com/Microsoft/ApplicationInsights-Home/blob/master/SmartDetection/degradation-in-trace-severity-ratio.md",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": true,
+                    "SupportsEmailNotifications": false
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_humungousworkshop_www_name'), '/longdependencyduration')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_humungousworkshop_www_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "longdependencyduration",
+                    "DisplayName": "Long dependency duration",
+                    "Description": "Smart Detection rules notify you of performance anomaly issues.",
+                    "HelpUrl": "https://docs.microsoft.com/en-us/azure/application-insights/app-insights-proactive-performance-diagnostics",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": false,
+                    "SupportsEmailNotifications": true
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_humungousworkshop_www_name'), '/migrationToAlertRulesCompleted')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_humungousworkshop_www_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "migrationToAlertRulesCompleted",
+                    "DisplayName": "Migration To Alert Rules Completed",
+                    "Description": "A configuration that controls the migration state of Smart Detection to Smart Alerts",
+                    "HelpUrl": "https://docs.microsoft.com/en-us/azure/application-insights/app-insights-proactive-performance-diagnostics",
+                    "IsHidden": true,
+                    "IsEnabledByDefault": false,
+                    "IsInPreview": true,
+                    "SupportsEmailNotifications": false
+                },
+                "enabled": false,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_humungousworkshop_www_name'), '/slowpageloadtime')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_humungousworkshop_www_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "slowpageloadtime",
+                    "DisplayName": "Slow page load time",
+                    "Description": "Smart Detection rules notify you of performance anomaly issues.",
+                    "HelpUrl": "https://docs.microsoft.com/en-us/azure/application-insights/app-insights-proactive-performance-diagnostics",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": false,
+                    "SupportsEmailNotifications": true
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_humungousworkshop_www_name'), '/slowserverresponsetime')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_humungousworkshop_www_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "slowserverresponsetime",
+                    "DisplayName": "Slow server response time",
+                    "Description": "Smart Detection rules notify you of performance anomaly issues.",
+                    "HelpUrl": "https://docs.microsoft.com/en-us/azure/application-insights/app-insights-proactive-performance-diagnostics",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": false,
+                    "SupportsEmailNotifications": true
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "Microsoft.KeyVault/vaults/secrets",
+            "apiVersion": "2023-02-01",
+            "name": "[concat(parameters('vaults_humungousdemo_kv_name'), '/CosmosDbAccount')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_humungousdemo_kv_name'))]"
+            ],
+            "properties": {
+                "attributes": {
+                    "enabled": true
+                }
+            }
+        },
+        {
+            "type": "Microsoft.KeyVault/vaults/secrets",
+            "apiVersion": "2023-02-01",
+            "name": "[concat(parameters('vaults_humungousdemo_kv_name'), '/CosmosDbKey')]",
+            "location": "eastus",
+            "dependsOn": [
+                "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_humungousdemo_kv_name'))]"
+            ],
+            "properties": {
+                "attributes": {
+                    "enabled": true
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/basicPublishingCredentialsPolicies",
+            "apiVersion": "2022-09-01",
+            "name": "[concat(parameters('sites_humungousworkshop_www_name'), '/ftp')]",
+            "location": "East US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_humungousworkshop_www_name'))]"
+            ],
+            "properties": {
+                "allow": true
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/basicPublishingCredentialsPolicies",
+            "apiVersion": "2022-09-01",
+            "name": "[concat(parameters('sites_humungousworkshop_www_name'), '/scm')]",
+            "location": "East US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_humungousworkshop_www_name'))]"
+            ],
+            "properties": {
+                "allow": true
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/config",
+            "apiVersion": "2022-09-01",
+            "name": "[concat(parameters('sites_humungousworkshop_www_name'), '/web')]",
+            "location": "East US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_humungousworkshop_www_name'))]"
+            ],
+            "properties": {
+                "numberOfWorkers": 1,
+                "defaultDocuments": [
+                    "Default.htm",
+                    "Default.html",
+                    "Default.asp",
+                    "index.htm",
+                    "index.html",
+                    "iisstart.htm",
+                    "default.aspx",
+                    "index.php",
+                    "hostingstart.html"
+                ],
+                "netFrameworkVersion": "v6.0",
+                "requestTracingEnabled": false,
+                "remoteDebuggingEnabled": false,
+                "remoteDebuggingVersion": "VS2019",
+                "httpLoggingEnabled": false,
+                "acrUseManagedIdentityCreds": false,
+                "logsDirectorySizeLimit": 35,
+                "detailedErrorLoggingEnabled": false,
+                "publishingUsername": "$humungousworkshop-www",
+                "scmType": "None",
+                "use32BitWorkerProcess": true,
+                "webSocketsEnabled": false,
+                "alwaysOn": true,
+                "managedPipelineMode": "Integrated",
+                "virtualApplications": [
+                    {
+                        "virtualPath": "/",
+                        "physicalPath": "site\\wwwroot",
+                        "preloadEnabled": true
+                    }
+                ],
+                "loadBalancing": "LeastRequests",
+                "experiments": {
+                    "rampUpRules": []
+                },
+                "autoHealEnabled": false,
+                "vnetRouteAllEnabled": false,
+                "vnetPrivatePortsCount": 0,
+                "publicNetworkAccess": "Enabled",
+                "localMySqlEnabled": false,
+                "managedServiceIdentityId": 5869,
+                "ipSecurityRestrictions": [
+                    {
+                        "ipAddress": "Any",
+                        "action": "Allow",
+                        "priority": 2147483647,
+                        "name": "Allow all",
+                        "description": "Allow all access"
+                    }
+                ],
+                "scmIpSecurityRestrictions": [
+                    {
+                        "ipAddress": "Any",
+                        "action": "Allow",
+                        "priority": 2147483647,
+                        "name": "Allow all",
+                        "description": "Allow all access"
+                    }
+                ],
+                "scmIpSecurityRestrictionsUseMain": false,
+                "http20Enabled": false,
+                "minTlsVersion": "1.2",
+                "scmMinTlsVersion": "1.2",
+                "ftpsState": "FtpsOnly",
+                "preWarmedInstanceCount": 0,
+                "elasticWebAppScaleLimit": 0,
+                "functionsRuntimeScaleMonitoringEnabled": false,
+                "minimumElasticInstanceCount": 0,
+                "azureStorageAccounts": {}
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2022-09-01",
+            "name": "[concat(parameters('sites_humungousworkshop_www_name'), '/2859ad6a217041ecb1829469fd0c2cd6')]",
+            "location": "East US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_humungousworkshop_www_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "N/A",
+                "deployer": "GITHUB_ZIP_DEPLOY",
+                "message": "{\"type\":\"deployment\",\"sha\":\"571c1e69b7f2d4de736d8e32a1dd4baed6154a10\",\"repoName\":\"briglx/healthcare_demo\",\"actor\":\"briglx\",\"slotName\":\"production\",\"commitMessage\":\"Remove extra\"}",
+                "start_time": "2023-04-13T20:24:51.3485698Z",
+                "end_time": "2023-04-13T20:24:57.5275614Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2022-09-01",
+            "name": "[concat(parameters('sites_humungousworkshop_www_name'), '/86bf90e7467c4d85a7abe9b7c6ccec80')]",
+            "location": "East US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_humungousworkshop_www_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "N/A",
+                "deployer": "GITHUB_ZIP_DEPLOY",
+                "message": "{\"type\":\"deployment\",\"sha\":\"17d31584222c9c2e074829d6067168bc4799b5bc\",\"repoName\":\"briglx/healthcare_demo\",\"actor\":\"briglx\",\"slotName\":\"production\",\"commitMessage\":\"Replace with webapp-deploy\"}",
+                "start_time": "2023-04-13T20:22:23.8394877Z",
+                "end_time": "2023-04-13T20:22:28.0270474Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2022-09-01",
+            "name": "[concat(parameters('sites_humungousworkshop_www_name'), '/b56489308c7445e2b94cd652aa575187')]",
+            "location": "East US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_humungousworkshop_www_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "N/A",
+                "deployer": "GITHUB_ZIP_DEPLOY",
+                "message": "{\"type\":\"deployment\",\"sha\":\"249d55af434a3a8c9251642d0df1c605b323a500\",\"repoName\":\"briglx/healthcare_demo\",\"actor\":\"briglx\",\"slotName\":\"production\",\"commitMessage\":\"Update arch\"}",
+                "start_time": "2023-04-13T20:27:25.2516432Z",
+                "end_time": "2023-04-13T20:27:31.8141821Z",
+                "active": true
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2022-09-01",
+            "name": "[concat(parameters('sites_humungousworkshop_www_name'), '/faf59cb751cb45ec8e63f25c68cfaf64')]",
+            "location": "East US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_humungousworkshop_www_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "N/A",
+                "deployer": "OneDeploy",
+                "message": "OneDeploy",
+                "start_time": "2023-04-13T20:08:56.1273408Z",
+                "end_time": "2023-04-13T20:09:05.0925703Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/hostNameBindings",
+            "apiVersion": "2022-09-01",
+            "name": "[concat(parameters('sites_humungousworkshop_www_name'), '/', parameters('sites_humungousworkshop_www_name'), '.azurewebsites.net')]",
+            "location": "East US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_humungousworkshop_www_name'))]"
+            ],
+            "properties": {
+                "siteName": "humungousworkshop-www",
+                "hostNameType": "Verified"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/siteextensions",
+            "apiVersion": "2022-09-01",
+            "name": "[concat(parameters('sites_humungousworkshop_www_name'), '/Microsoft.AspNetCore.AzureAppServices.SiteExtension')]",
+            "location": "East US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_humungousworkshop_www_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_humungousworkshop_www_name'), '/2023-04-13T19_01_50_6050992')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_humungousworkshop_www_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_humungousworkshop_www_name'), '/2023-04-13T20_01_50_7887062')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_humungousworkshop_www_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_humungousworkshop_www_name'), '/2023-04-13T21_01_50_9361719')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_humungousworkshop_www_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations",
+            "apiVersion": "2022-08-01",
+            "name": "[concat(parameters('service_humungousdemo_apim_name'), '/humongous-healthcare/delete-healthcheck-id')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', parameters('service_humungousdemo_apim_name'), 'humongous-healthcare')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_humungousdemo_apim_name'))]"
+            ],
+            "properties": {
+                "displayName": "/HealthCheck/{id} - DELETE",
+                "method": "DELETE",
+                "urlTemplate": "/HealthCheck/{id}",
+                "templateParameters": [
+                    {
+                        "name": "id",
+                        "type": "string",
+                        "required": true,
+                        "values": [],
+                        "schemaId": "64384bda1aff16134ca88516",
+                        "typeName": "HealthCheck-id-DeleteRequest"
+                    }
+                ],
+                "responses": [
+                    {
+                        "statusCode": 200,
+                        "description": "Success",
+                        "representations": [],
+                        "headers": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations",
+            "apiVersion": "2022-08-01",
+            "name": "[concat(parameters('service_humungousdemo_apim_name'), '/humongous-healthcare/get-healthcheck')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', parameters('service_humungousdemo_apim_name'), 'humongous-healthcare')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_humungousdemo_apim_name'))]"
+            ],
+            "properties": {
+                "displayName": "/HealthCheck - GET",
+                "method": "GET",
+                "urlTemplate": "/HealthCheck",
+                "templateParameters": [],
+                "responses": [
+                    {
+                        "statusCode": 200,
+                        "description": "Success",
+                        "representations": [
+                            {
+                                "contentType": "text/plain",
+                                "examples": {
+                                    "default": {}
+                                },
+                                "schemaId": "64384bda1aff16134ca88516",
+                                "typeName": "HealthCheckGet200TextPlainResponse"
+                            },
+                            {
+                                "contentType": "application/json",
+                                "examples": {
+                                    "default": {
+                                        "value": [
+                                            {
+                                                "id": "string",
+                                                "patientid": 0,
+                                                "date": "string",
+                                                "healthstatus": "string",
+                                                "symptoms": [
+                                                    "string"
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                },
+                                "schemaId": "64384bda1aff16134ca88516",
+                                "typeName": "HealthCheckGet200ApplicationJsonResponse"
+                            },
+                            {
+                                "contentType": "text/json",
+                                "examples": {
+                                    "default": {
+                                        "value": [
+                                            {
+                                                "id": "string",
+                                                "patientid": 0,
+                                                "date": "string",
+                                                "healthstatus": "string",
+                                                "symptoms": [
+                                                    "string"
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                },
+                                "schemaId": "64384bda1aff16134ca88516",
+                                "typeName": "HealthCheckGet200TextJsonResponse"
+                            }
+                        ],
+                        "headers": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations",
+            "apiVersion": "2022-08-01",
+            "name": "[concat(parameters('service_humungousdemo_apim_name'), '/humongous-healthcare/get-healthcheck-getstatus')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', parameters('service_humungousdemo_apim_name'), 'humongous-healthcare')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_humungousdemo_apim_name'))]"
+            ],
+            "properties": {
+                "displayName": "/HealthCheck/GetStatus - GET",
+                "method": "GET",
+                "urlTemplate": "/HealthCheck/GetStatus",
+                "templateParameters": [],
+                "responses": [
+                    {
+                        "statusCode": 200,
+                        "description": "Success",
+                        "representations": [
+                            {
+                                "contentType": "text/plain",
+                                "examples": {
+                                    "default": {}
+                                },
+                                "schemaId": "64384bda1aff16134ca88516",
+                                "typeName": "HealthCheck"
+                            },
+                            {
+                                "contentType": "application/json",
+                                "examples": {
+                                    "default": {
+                                        "value": {}
+                                    }
+                                },
+                                "schemaId": "64384bda1aff16134ca88516",
+                                "typeName": "HealthCheck"
+                            },
+                            {
+                                "contentType": "text/json",
+                                "examples": {
+                                    "default": {
+                                        "value": {}
+                                    }
+                                },
+                                "schemaId": "64384bda1aff16134ca88516",
+                                "typeName": "HealthCheck"
+                            }
+                        ],
+                        "headers": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations",
+            "apiVersion": "2022-08-01",
+            "name": "[concat(parameters('service_humungousdemo_apim_name'), '/humongous-healthcare/get-healthcheck-id')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', parameters('service_humungousdemo_apim_name'), 'humongous-healthcare')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_humungousdemo_apim_name'))]"
+            ],
+            "properties": {
+                "displayName": "/HealthCheck/{id} - GET",
+                "method": "GET",
+                "urlTemplate": "/HealthCheck/{id}",
+                "templateParameters": [
+                    {
+                        "name": "id",
+                        "type": "string",
+                        "required": true,
+                        "values": [],
+                        "schemaId": "64384bda1aff16134ca88516",
+                        "typeName": "HealthCheck-id-GetRequest"
+                    }
+                ],
+                "responses": [
+                    {
+                        "statusCode": 200,
+                        "description": "Success",
+                        "representations": [
+                            {
+                                "contentType": "text/plain",
+                                "examples": {
+                                    "default": {}
+                                },
+                                "schemaId": "64384bda1aff16134ca88516",
+                                "typeName": "HealthCheck-id-Get200TextPlainResponse"
+                            },
+                            {
+                                "contentType": "application/json",
+                                "examples": {
+                                    "default": {
+                                        "value": [
+                                            {
+                                                "id": "string",
+                                                "patientid": 0,
+                                                "date": "string",
+                                                "healthstatus": "string",
+                                                "symptoms": [
+                                                    "string"
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                },
+                                "schemaId": "64384bda1aff16134ca88516",
+                                "typeName": "HealthCheck-id-Get200ApplicationJsonResponse"
+                            },
+                            {
+                                "contentType": "text/json",
+                                "examples": {
+                                    "default": {
+                                        "value": [
+                                            {
+                                                "id": "string",
+                                                "patientid": 0,
+                                                "date": "string",
+                                                "healthstatus": "string",
+                                                "symptoms": [
+                                                    "string"
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                },
+                                "schemaId": "64384bda1aff16134ca88516",
+                                "typeName": "HealthCheck-id-Get200TextJsonResponse"
+                            }
+                        ],
+                        "headers": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations",
+            "apiVersion": "2022-08-01",
+            "name": "[concat(parameters('service_humungousdemo_apim_name'), '/humongous-healthcare/post-healthcheck')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', parameters('service_humungousdemo_apim_name'), 'humongous-healthcare')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_humungousdemo_apim_name'))]"
+            ],
+            "properties": {
+                "displayName": "/HealthCheck - POST",
+                "method": "POST",
+                "urlTemplate": "/HealthCheck",
+                "templateParameters": [],
+                "request": {
+                    "queryParameters": [],
+                    "headers": [],
+                    "representations": [
+                        {
+                            "contentType": "application/json",
+                            "examples": {
+                                "default": {
+                                    "value": {}
+                                }
+                            },
+                            "schemaId": "64384bda1aff16134ca88516",
+                            "typeName": "HealthCheck"
+                        },
+                        {
+                            "contentType": "text/json",
+                            "examples": {
+                                "default": {
+                                    "value": {}
+                                }
+                            },
+                            "schemaId": "64384bda1aff16134ca88516",
+                            "typeName": "HealthCheck"
+                        },
+                        {
+                            "contentType": "application/*+json",
+                            "examples": {
+                                "default": {
+                                    "value": {}
+                                }
+                            },
+                            "schemaId": "64384bda1aff16134ca88516",
+                            "typeName": "HealthCheck"
+                        }
+                    ]
+                },
+                "responses": [
+                    {
+                        "statusCode": 200,
+                        "description": "Success",
+                        "representations": [],
+                        "headers": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations",
+            "apiVersion": "2022-08-01",
+            "name": "[concat(parameters('service_humungousdemo_apim_name'), '/humongous-healthcare/put-healthcheck-id')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', parameters('service_humungousdemo_apim_name'), 'humongous-healthcare')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_humungousdemo_apim_name'))]"
+            ],
+            "properties": {
+                "displayName": "/HealthCheck/{id} - PUT",
+                "method": "PUT",
+                "urlTemplate": "/HealthCheck/{id}",
+                "templateParameters": [
+                    {
+                        "name": "id",
+                        "type": "string",
+                        "required": true,
+                        "values": [],
+                        "schemaId": "64384bda1aff16134ca88516",
+                        "typeName": "HealthCheck-id-PutRequest"
+                    }
+                ],
+                "request": {
+                    "queryParameters": [],
+                    "headers": [],
+                    "representations": [
+                        {
+                            "contentType": "application/json",
+                            "examples": {
+                                "default": {
+                                    "value": {}
+                                }
+                            },
+                            "schemaId": "64384bda1aff16134ca88516",
+                            "typeName": "HealthCheck"
+                        },
+                        {
+                            "contentType": "text/json",
+                            "examples": {
+                                "default": {
+                                    "value": {}
+                                }
+                            },
+                            "schemaId": "64384bda1aff16134ca88516",
+                            "typeName": "HealthCheck"
+                        },
+                        {
+                            "contentType": "application/*+json",
+                            "examples": {
+                                "default": {
+                                    "value": {}
+                                }
+                            },
+                            "schemaId": "64384bda1aff16134ca88516",
+                            "typeName": "HealthCheck"
+                        }
+                    ]
+                },
+                "responses": [
+                    {
+                        "statusCode": 200,
+                        "description": "Success",
+                        "representations": [],
+                        "headers": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/schemas",
+            "apiVersion": "2022-08-01",
+            "name": "[concat(parameters('service_humungousdemo_apim_name'), '/humongous-healthcare/64384bda1aff16134ca88516')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', parameters('service_humungousdemo_apim_name'), 'humongous-healthcare')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_humungousdemo_apim_name'))]"
+            ],
+            "properties": {
+                "contentType": "application/vnd.oai.openapi.components+json",
+                "document": {}
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/diagnostics",
+            "apiVersion": "2022-08-01",
+            "name": "[concat(parameters('service_humungousdemo_apim_name'), '/applicationinsights')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_humungousdemo_apim_name'))]",
+                "[resourceId('Microsoft.ApiManagement/service/loggers', parameters('service_humungousdemo_apim_name'), 'humungousworkshop-www')]"
+            ],
+            "properties": {
+                "alwaysLog": "allErrors",
+                "httpCorrelationProtocol": "Legacy",
+                "logClientIp": true,
+                "loggerId": "[resourceId('Microsoft.ApiManagement/service/loggers', parameters('service_humungousdemo_apim_name'), 'humungousworkshop-www')]",
+                "sampling": {
+                    "samplingType": "fixed",
+                    "percentage": 100
+                },
+                "frontend": {
+                    "request": {
+                        "dataMasking": {
+                            "queryParams": [
+                                {
+                                    "value": "*",
+                                    "mode": "Hide"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "backend": {
+                    "request": {
+                        "dataMasking": {
+                            "queryParams": [
+                                {
+                                    "value": "*",
+                                    "mode": "Hide"
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/diagnostics/loggers",
+            "apiVersion": "2018-01-01",
+            "name": "[concat(parameters('service_humungousdemo_apim_name'), '/applicationinsights/humungousworkshop-www')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/diagnostics', parameters('service_humungousdemo_apim_name'), 'applicationinsights')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_humungousdemo_apim_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/loggers",
+            "apiVersion": "2022-08-01",
+            "name": "[concat(parameters('service_humungousdemo_apim_name'), '/humungousworkshop-www')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_humungousdemo_apim_name'))]",
+                "[resourceId('microsoft.insights/components', parameters('components_humungousworkshop_www_name'))]"
+            ],
+            "properties": {
+                "loggerType": "applicationInsights",
+                "credentials": {
+                    "instrumentationKey": "{{Logger-Credentials--64384cda313e2f106c0e6400}}"
+                },
+                "isBuffered": true,
+                "resourceId": "[resourceId('microsoft.insights/components', parameters('components_humungousworkshop_www_name'))]"
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/products/apis",
+            "apiVersion": "2022-08-01",
+            "name": "[concat(parameters('service_humungousdemo_apim_name'), '/humungousdemo-product/humongous-healthcare')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/products', parameters('service_humungousdemo_apim_name'), 'humungousdemo-product')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_humungousdemo_apim_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/subscriptions",
+            "apiVersion": "2022-08-01",
+            "name": "[concat(parameters('service_humungousdemo_apim_name'), '/humungousdemo-sub')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_humungousdemo_apim_name'))]",
+                "[resourceId('Microsoft.ApiManagement/service/products', parameters('service_humungousdemo_apim_name'), 'humungousdemo-product')]"
+            ],
+            "properties": {
+                "scope": "[resourceId('Microsoft.ApiManagement/service/products', parameters('service_humungousdemo_apim_name'), 'humungousdemo-product')]",
+                "displayName": "humungousdemo-sub",
+                "state": "active",
+                "allowTracing": false
+            }
+        },
+        {
+            "type": "Microsoft.Cdn/profiles/origingroups/origins",
+            "apiVersion": "2022-11-01-preview",
+            "name": "[concat(parameters('profiles_humungousworkshop_name'), '/default-origin-group/default-origin')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Cdn/profiles/origingroups', parameters('profiles_humungousworkshop_name'), 'default-origin-group')]",
+                "[resourceId('Microsoft.Cdn/profiles', parameters('profiles_humungousworkshop_name'))]"
+            ],
+            "properties": {
+                "hostName": "apps.powerapps.com",
+                "httpPort": 80,
+                "httpsPort": 443,
+                "originHostHeader": "apps.powerapps.com",
+                "priority": 1,
+                "weight": 1000,
+                "enabledState": "Enabled",
+                "enforceCertificateNameCheck": true
+            }
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
+            "apiVersion": "2023-03-01-preview",
+            "name": "[concat(parameters('databaseAccounts_umungousworkshop_name'), '/HealthCheckDB/HealthCheck')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', parameters('databaseAccounts_umungousworkshop_name'), 'HealthCheckDB')]",
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_umungousworkshop_name'))]"
+            ],
+            "properties": {
+                "resource": {
+                    "id": "HealthCheck",
+                    "indexingPolicy": {
+                        "indexingMode": "consistent",
+                        "automatic": true,
+                        "includedPaths": [
+                            {
+                                "path": "/*"
+                            }
+                        ],
+                        "excludedPaths": [
+                            {
+                                "path": "/\"_etag\"/?"
+                            }
+                        ]
+                    },
+                    "partitionKey": {
+                        "paths": [
+                            "/id"
+                        ],
+                        "kind": "Hash"
+                    },
+                    "conflictResolutionPolicy": {
+                        "mode": "LastWriterWins",
+                        "conflictResolutionPath": "/_ts"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations/tags",
+            "apiVersion": "2022-08-01",
+            "name": "[concat(parameters('service_humungousdemo_apim_name'), '/humongous-healthcare/delete-healthcheck-id/HealthCheck')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis/operations', parameters('service_humungousdemo_apim_name'), 'humongous-healthcare', 'delete-healthcheck-id')]",
+                "[resourceId('Microsoft.ApiManagement/service/apis', parameters('service_humungousdemo_apim_name'), 'humongous-healthcare')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_humungousdemo_apim_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations/tags",
+            "apiVersion": "2022-08-01",
+            "name": "[concat(parameters('service_humungousdemo_apim_name'), '/humongous-healthcare/get-healthcheck/HealthCheck')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis/operations', parameters('service_humungousdemo_apim_name'), 'humongous-healthcare', 'get-healthcheck')]",
+                "[resourceId('Microsoft.ApiManagement/service/apis', parameters('service_humungousdemo_apim_name'), 'humongous-healthcare')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_humungousdemo_apim_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations/tags",
+            "apiVersion": "2022-08-01",
+            "name": "[concat(parameters('service_humungousdemo_apim_name'), '/humongous-healthcare/get-healthcheck-getstatus/HealthCheck')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis/operations', parameters('service_humungousdemo_apim_name'), 'humongous-healthcare', 'get-healthcheck-getstatus')]",
+                "[resourceId('Microsoft.ApiManagement/service/apis', parameters('service_humungousdemo_apim_name'), 'humongous-healthcare')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_humungousdemo_apim_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations/tags",
+            "apiVersion": "2022-08-01",
+            "name": "[concat(parameters('service_humungousdemo_apim_name'), '/humongous-healthcare/get-healthcheck-id/HealthCheck')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis/operations', parameters('service_humungousdemo_apim_name'), 'humongous-healthcare', 'get-healthcheck-id')]",
+                "[resourceId('Microsoft.ApiManagement/service/apis', parameters('service_humungousdemo_apim_name'), 'humongous-healthcare')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_humungousdemo_apim_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations/tags",
+            "apiVersion": "2022-08-01",
+            "name": "[concat(parameters('service_humungousdemo_apim_name'), '/humongous-healthcare/post-healthcheck/HealthCheck')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis/operations', parameters('service_humungousdemo_apim_name'), 'humongous-healthcare', 'post-healthcheck')]",
+                "[resourceId('Microsoft.ApiManagement/service/apis', parameters('service_humungousdemo_apim_name'), 'humongous-healthcare')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_humungousdemo_apim_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.ApiManagement/service/apis/operations/tags",
+            "apiVersion": "2022-08-01",
+            "name": "[concat(parameters('service_humungousdemo_apim_name'), '/humongous-healthcare/put-healthcheck-id/HealthCheck')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis/operations', parameters('service_humungousdemo_apim_name'), 'humongous-healthcare', 'put-healthcheck-id')]",
+                "[resourceId('Microsoft.ApiManagement/service/apis', parameters('service_humungousdemo_apim_name'), 'humongous-healthcare')]",
+                "[resourceId('Microsoft.ApiManagement/service', parameters('service_humungousdemo_apim_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Cdn/profiles/afdendpoints/routes",
+            "apiVersion": "2022-11-01-preview",
+            "name": "[concat(parameters('profiles_humungousworkshop_name'), '/powerappworshop/default-route')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Cdn/profiles/afdendpoints', parameters('profiles_humungousworkshop_name'), 'powerappworshop')]",
+                "[resourceId('Microsoft.Cdn/profiles', parameters('profiles_humungousworkshop_name'))]",
+                "[resourceId('Microsoft.Cdn/profiles/origingroups', parameters('profiles_humungousworkshop_name'), 'default-origin-group')]"
+            ],
+            "properties": {
+                "customDomains": [],
+                "originGroup": {
+                    "id": "[resourceId('Microsoft.Cdn/profiles/origingroups', parameters('profiles_humungousworkshop_name'), 'default-origin-group')]"
+                },
+                "ruleSets": [],
+                "supportedProtocols": [
+                    "Http",
+                    "Https"
+                ],
+                "patternsToMatch": [
+                    "/*"
+                ],
+                "forwardingProtocol": "MatchRequest",
+                "linkToDefaultDomain": "Enabled",
+                "httpsRedirect": "Enabled",
+                "enabledState": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/throughputSettings",
+            "apiVersion": "2023-03-01-preview",
+            "name": "[concat(parameters('databaseAccounts_umungousworkshop_name'), '/HealthCheckDB/HealthCheck/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers', parameters('databaseAccounts_umungousworkshop_name'), 'HealthCheckDB', 'HealthCheck')]",
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', parameters('databaseAccounts_umungousworkshop_name'), 'HealthCheckDB')]",
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_umungousworkshop_name'))]"
+            ],
+            "properties": {
+                "resource": {
+                    "throughput": 400
+                }
+            }
+        }
+    ]
+}

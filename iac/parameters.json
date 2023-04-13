@@ -1,0 +1,39 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "profiles_humungousworkshop_name": {
+            "value": null
+        },
+        "sites_humungousworkshop_www_name": {
+            "value": null
+        },
+        "vaults_humungousdemo_kv_name": {
+            "value": null
+        },
+        "service_humungousdemo_apim_name": {
+            "value": null
+        },
+        "components_humungousworkshop_www_name": {
+            "value": null
+        },
+        "databaseAccounts_umungousworkshop_name": {
+            "value": null
+        },
+        "webtests_humungousdemo_apim_humungousworkshop_www_name": {
+            "value": null
+        },
+        "smartdetectoralertrules_failure_anomalies___humungousworkshop_www_name": {
+            "value": null
+        },
+        "actiongroups_application_insights_smart_detection_externalid": {
+            "value": null
+        },
+        "workspaces_defaultworkspace_604355d5_a876_4c9c_b232_7d306be5abc9_eus_externalid": {
+            "value": null
+        },
+        "serverfarms_ASP_privateendpointtest_bf72_externalid": {
+            "value": null
+        }
+    }
+}

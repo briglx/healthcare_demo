@@ -144,6 +144,12 @@ Create a resource group for this project
 az group create --name $RG_NAME --location $RG_REGION
 ```
 
+### Remaining Resources
+
+```bash
+az deployment group create --resource-group $RG_NAME --template-file iac/template.json --parameters iac/parameters.json
+```
+
 # Development
 
 Setup your dev environment by cloning and opening the project. The project uses DevContainers so be sure to open the project using the container.
@@ -159,3 +165,4 @@ code .
 - Dotnet Dev containers https://github.com/microsoft/vscode-remote-try-dotnet
 - GitHub to Azure Action https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Cwindows
 - Publish web app https://learn.microsoft.com/en-us/azure/app-service/deploy-zip?tabs=cli
+- Web App Deploy Action https://github.com/Azure/actions-workflow-samples/blob/master/AppService/asp.net-core-webapp-on-azure.yml

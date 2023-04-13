@@ -40,18 +40,12 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
-     
-      - name: Install dependencies
-        run: |
-          pwd
-          cd src
-          dotnet restore
-     
+
       - name: Publish
         run: |
           pwd
           cd src
-          dotnet publish --configuration Release --no-restore --out out
+          dotnet publish --configuration Release --output out
 
       - name: Deploy to Azure
         run: |

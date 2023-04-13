@@ -31,10 +31,19 @@ jobs:
           dotnet-version: ${{ matrix.dotnet-version }}
      
       - name: Install dependencies
-        run: dotnet restore
+        run: |
+          pwd
+          cd src
+          dotnet restore
      
       - name: Build
-        run: dotnet build --configuration Release --no-restore
+        run: |
+          pwd
+          cd src
+          dotnet build --configuration Release --no-restore
      
       - name: Test
-        run: dotnet test --no-restore --verbosity norma
+        run: |
+          pwd
+          cd src
+          dotnet test --no-restore --verbosity norma

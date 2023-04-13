@@ -158,3 +158,4 @@ code .
 - Dotnet Github actions https://learn.microsoft.com/en-us/dotnet/devops/create-dotnet-github-action
 - Dotnet Dev containers https://github.com/microsoft/vscode-remote-try-dotnet
 - GitHub to Azure Action https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Cwindows
+- Publish web app https://learn.microsoft.com/en-us/azure/app-service/deploy-zip?tabs=cli

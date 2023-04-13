@@ -45,4 +45,7 @@ jobs:
       - name: Deploy to Azure
         run: |
           pwd
-          az webapp deployment --resource-group humungousworkshop --name hh_api --src-path "src/Humongous.Healthcare" --type war --async true
+
+          zip -r package.zip src/Humongous.Healthcare/.bin/Release/
+
+          az webapp deploy --resource-group humungousworkshop --name HumongousHealthcareApi --src-path package.zip

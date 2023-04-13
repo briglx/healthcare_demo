@@ -52,7 +52,7 @@ jobs:
           pwd
           ls
 
-          zip package.zip out
+          zip package.zip src/Humongous.Healthcare/out
 
           # zip package.zip src/Humongous.Healthcare/bin/Release/net6.0/publish
 

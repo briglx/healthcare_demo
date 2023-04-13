@@ -47,6 +47,6 @@ jobs:
           pwd
           ls
 
-          zip package.zip src/Humongous.Healthcare/.bin/Release
+          zip package.zip src/Humongous.Healthcare/bin/Release
 
           az webapp deploy --resource-group humungousworkshop --name HumongousHealthcareApi --src-path package.zip
